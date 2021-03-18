@@ -17,11 +17,7 @@ const actions = {
   async login(context, data) {
     // 调用api接口
     const result = await login(data)
-    if (result.success) {
-      //登录成功
-      context.commit('setToken', result.data.data)
-      resolve() // 表示执行成功了
-    }
+    context.commit('setToken', result)
   }
 }
 export default {
