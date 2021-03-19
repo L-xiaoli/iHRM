@@ -1,5 +1,5 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { login, getInfo, getUserDetailById } from '@/api/user'
+import { login, getInfo, getUserDetailById, logout } from '@/api/user'
 
 const state = {
   token: getToken(), // 设置token初始状态   token持久化 => 放到缓存中
@@ -25,11 +25,13 @@ const mutations = {
   }
 }
 const actions = {
+  // 登录操作
   async login(context, data) {
     // 调用api接口
     const result = await login(data)
     context.commit('setToken', result) // 提交到mutations
   },
+  //  获取用户信息
   async getUserInfo(context) {
     const userInfo = await getInfo()
     // 获取用户详情
@@ -37,6 +39,11 @@ const actions = {
     const baseResult = { ...userInfo, ...baseInfo }
     context.commit('setUserInfo', baseResult) // 提交到mutations
     return userInfo // 这里为什么要返回 为后面埋下伏笔
+  },
+  // 退出功能
+  logout(context) {
+    context.commit('removeToken') // 删Token
+    context.commit('removeUserInfo') // 删资料
   }
 }
 export default {
