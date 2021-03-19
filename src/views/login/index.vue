@@ -57,8 +57,9 @@
         type="primary"
         style="width: 100%; margin-bottom: 30px"
         @click.native.prevent="handleLogin"
-        >登录</el-button
       >
+        登录
+      </el-button>
       <div class="tips">
         <span style="margin-right: 20px">账号: 13800000002</span>
         <span> 密码: 123456</span>
@@ -71,7 +72,7 @@
 import { validMobile } from '@/utils/validate'
 export default {
   name: 'Login',
-  data () {
+  data() {
     const validateMobile = (rule, value, callback) => {
       validMobile(value) ? callback() : callback(new Error('手机号格式不正确'))
     }
@@ -97,14 +98,14 @@ export default {
   },
   watch: {
     $route: {
-      handler: function (route) {
+      handler: function(route) {
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
     }
   },
   methods: {
-    showPwd () {
+    showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
       } else {
@@ -114,7 +115,7 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin () {
+    handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true

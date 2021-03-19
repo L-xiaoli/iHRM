@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-03-17 13:50:19
+ * @LastEditTime: 2021-03-19 11:19:07
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \01_vue-admin-template\src\utils\request.js
+ */
 // 导出一个axios的实例  而且这个实例要有请求拦截器 响应拦截器
 import axios from 'axios'
 import { Message } from 'element-ui'
@@ -24,7 +32,7 @@ service.interceptors.response.use(
     }
   },
   error => {
-    Message.error(err.Message) // 提示错误信息
+    Message.error(error.Message) // 提示错误信息
     return Promise.reject(error) // 返回执行错误 让当前的执行链跳出成功 直接进入 catch
   }
 )
