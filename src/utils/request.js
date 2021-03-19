@@ -1,12 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-03-17 13:50:19
- * @LastEditTime: 2021-03-19 11:19:07
- * @LastEditors: your name
+ * @LastEditTime: 2021-03-19 14:23:28
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \01_vue-admin-template\src\utils\request.js
  */
 // 导出一个axios的实例  而且这个实例要有请求拦截器 响应拦截器
+import store from '@/store'
+import { config } from '@vue/test-utils'
 import axios from 'axios'
 import { Message } from 'element-ui'
 // 创建一个axios的实例
@@ -17,7 +19,19 @@ const service = axios.create({
 })
 
 // 请求拦截器
-service.interceptors.request.use()
+service.interceptors.request.use(
+  config => {
+    // 在这个位置需要统一的去注入token
+    if (store.getters.token) {
+      // 如果token存在 注入token
+      config.headers['Authorization'] = `Bearer ${store.getters.token}`
+    }
+    return config // 必须返回配置
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
 
 // 响应拦截器
 service.interceptors.response.use(

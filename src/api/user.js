@@ -7,7 +7,16 @@ export function login(data) {
     data
   })
 }
+/**
+ * 获取用户资料
+ * @param {Strig} token
 
-export function getInfo(token) {}
+ */
+export function getInfo(token) {
+  return request({
+    url: ' /sys/profile',
+    method: 'GET'
+  })
+}
 
 export function logout() {}
