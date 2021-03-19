@@ -1,5 +1,5 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-
+import { login } from '@/api/user'
 const state = {
   token: getToken() // 设置token初始状态   token持久化 => 放到缓存中
 }
@@ -10,7 +10,7 @@ const mutations = {
   },
   removeToken(state, token) {
     state.token = null // 把vuex数据置空
-    removeToken() //清除缓存
+    removeToken() // 清除缓存
   }
 }
 const actions = {
