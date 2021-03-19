@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2021-03-17 13:50:19
- * @LastEditTime: 2021-03-19 14:23:28
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \01_vue-admin-template\src\utils\request.js
- */
 // 导出一个axios的实例  而且这个实例要有请求拦截器 响应拦截器
 import store from '@/store'
 import { config } from '@vue/test-utils'
@@ -32,7 +24,6 @@ service.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-
 // 响应拦截器
 service.interceptors.response.use(
   response => {

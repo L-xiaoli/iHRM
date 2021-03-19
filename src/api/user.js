@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: ' /sys/login',
+    url: '/sys/login',
     method: 'post',
     data
   })
@@ -10,12 +10,11 @@ export function login(data) {
 /**
  * 获取用户资料
  * @param {Strig} token
-
  */
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: ' /sys/profile',
-    method: 'GET'
+    url: '/sys/profile',
+    method: 'post'
   })
 }
 

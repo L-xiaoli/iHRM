@@ -1,5 +1,5 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { getInfo } from '@/api/user'
+import { login, getInfo } from '@/api/user'
 
 const state = {
   token: getToken(), // 设置token初始状态   token持久化 => 放到缓存中
@@ -10,20 +10,18 @@ const mutations = {
     state.token = token // 修改state的数据
     setToken(token) //   同步缓存
   },
-  removeToken(state, token) {
+  removeToken(state) {
     state.token = null // 把vuex数据置空
-    removeToken() //清除缓存
+    removeToken() // 清除缓存
   },
   // 设置用户信息
   setUserInfo(state, userInfo) {
     // state.userInfo = { ...userInfo } // 浅拷贝（响应式）
     state.userInfo = userInfo // 修改state的数据（响应式）
-    setUserInfo(userInfo) //  同步缓存
   },
   // 删除用户信息
-  removeUserInfo(state, userInfo) {
+  removeUserInfo(state) {
     state.userInfo = {} // 把vuex数据置空
-    removeUserInfo() //清除缓存
   }
 }
 const actions = {
@@ -32,9 +30,9 @@ const actions = {
     const result = await login(data)
     context.commit('setToken', result) // 提交到mutations
   },
-  async getUserInfo() {
-    const userInfo = await getInfo()
-    context.commit('setUserInfo', userInfo) // 提交到mutations
+  async getUserInfo(context) {
+    const result = await getInfo()
+    context.commit('setUserInfo', result) // 提交到mutations
     return result // 这里为什么要返回 为后面埋下伏笔
   }
 }
