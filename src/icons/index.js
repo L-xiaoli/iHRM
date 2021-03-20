@@ -9,4 +9,4 @@ Vue.component('svg-icon', SvgIcon)
 const req = require.context('./svg', false, /\.svg$/)
 const requireAll = requireContext => requireContext.keys().map(requireContext)
 requireAll(req)
-//? 以上两行的代码意思：将所有的svg目录下的.svg后缀文件全部引入项目中
+// ? 以上两行的代码意思：将所有的svg目录下的.svg后缀文件全部引入项目中
