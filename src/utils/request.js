@@ -5,7 +5,7 @@ import store from '@/store'
 import axios from 'axios'
 import { Message } from 'element-ui'
 import { getTimeStamp } from '@/utils/auth'
-const TimeOut = 2 // Token有限时间（2H）
+const TimeOut = 3600 // Token有限时间（2H）
 // 创建一个axios的实例
 const service = axios.create({
   // 执行npm run dev =>去找process.env.VUE_APP_BASE_API  => /api  =>为'/api'时会触发代理
@@ -47,7 +47,19 @@ service.interceptors.response.use(
     }
   },
   error => {
-    Message.error(error.message) // 提示错误信息
+    // error 信息 里面 response的对象
+    // 当等于10002的时候 表示 后端告诉我token超时了
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.code === 10002
+    ) {
+      store.dispatch('user/logout') // 登出action 删除token
+      router.push('/login')
+    } else {
+      Message.error(error.message) // 提示错误信息
+    }
+
     return Promise.reject(error) // 返回执行错误 让当前的执行链跳出成功 直接进入 catch
   }
 )
