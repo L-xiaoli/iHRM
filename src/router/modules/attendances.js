@@ -11,7 +11,8 @@ export default {
       component: () => import('@/views/attendances'), // 按需导入
       // meta：路由元信息  其实就是存储数据的对象 我们可以在这里放置一些信息
       meta: {
-        title: '考勤'
+        title: '考勤',
+        icon: 'skill'
       }
     }
   ]

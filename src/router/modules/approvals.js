@@ -11,7 +11,8 @@ export default {
       component: () => import('@/views/approvals'), // 按需导入
       // meta：路由元信息  其实就是存储数据的对象 我们可以在这里放置一些信息
       meta: {
-        title: '审批'
+        title: '审批',
+        icon: 'tree-table'
       }
     }
   ]
