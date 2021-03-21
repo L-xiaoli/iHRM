@@ -16,13 +16,14 @@
 <script>
 import TreeTools from './components/tree-tools'
 import { GetDepartmentList } from '@/api/departments'
+import { treeData } from '@/utils/index'
 export default {
   components: {
     TreeTools
   },
   data() {
     return {
-      company: { id: '', name: '1', manager: '负责人' },
+      company: { id: '', name: '', manager: '负责人' },
       departs: [],
       defaultProps: {
         label: 'name' // 表示 从这个属性显示内容
@@ -38,11 +39,11 @@ export default {
     async getDeparList() {
       const res = await GetDepartmentList()
       console.log(res)
-      this.departs = res.depts
+      this.departs = treeData(res.depts, '')
       this.company = {
         id: res.companyId,
-        name: res.companyName,
-        manager: res.companyManage
+        name: res.companyName
+        // manager: res.companyManage
       }
     }
   }

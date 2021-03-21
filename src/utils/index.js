@@ -17,8 +17,8 @@ export function parseTime(time, cFormat) {
   if (typeof time === 'object') {
     date = time
   } else {
-    if ((typeof time === 'string')) {
-      if ((/^[0-9]+$/.test(time))) {
+    if (typeof time === 'string') {
+      if (/^[0-9]+$/.test(time)) {
         // support "1548221490638"
         time = parseInt(time)
       } else {
@@ -28,7 +28,7 @@ export function parseTime(time, cFormat) {
       }
     }
 
-    if ((typeof time === 'number') && (time.toString().length === 10)) {
+    if (typeof time === 'number' && time.toString().length === 10) {
       time = time * 1000
     }
     date = new Date(time)
@@ -45,7 +45,9 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][value]
+    }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -114,4 +116,24 @@ export function param2Obj(url) {
     }
   })
   return obj
+}
+/**
+ * 将列表型的数据转化成树形数据 => 递归算法 => 自身调用自身 => 一定条件不能一样， 否则就会死循环
+ *  遍历树形 有一个重点 要先找一个头儿
+ */
+export function treeData(list, rootVal) {
+  const arr = []
+  list.forEach(item => {
+    // 先找根节点
+    if (item.pid === rootVal) {
+      // 递归遍历找子节点
+      const children = treeData(list, item.id)
+      if (children.length) {
+        // 长度>0:有子节点
+        item.children = children
+      }
+      arr.push(item)
+    }
+  })
+  return arr
 }
