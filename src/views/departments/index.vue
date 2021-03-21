@@ -7,7 +7,11 @@
         <el-tree :data="departs" :props="defaultProps" default-expand-all>
           <!-- 说明el-tree里面的这个内容 就是插槽内容 => 填坑内容  => 有多少个节点循环多少次 -->
           <!-- scope-scope 是 tree组件传给每个节点的插槽的内容的数据 -->
-          <tree-tools slot-scope="{ data }" :tree-node="data" />
+          <tree-tools
+            slot-scope="{ data }"
+            :tree-node="data"
+            @success="getDeparList()"
+          />
         </el-tree>
       </el-card>
     </div>
@@ -15,7 +19,7 @@
 </template>
 <script>
 import TreeTools from './components/tree-tools'
-import { GetDepartmentList } from '@/api/departments'
+import { getDepartmentList } from '@/api/departments'
 import { treeData } from '@/utils/index'
 export default {
   components: {
@@ -37,13 +41,11 @@ export default {
   methods: {
     // 获取
     async getDeparList() {
-      const res = await GetDepartmentList()
-      console.log(res)
+      const res = await getDepartmentList()
       this.departs = treeData(res.depts, '')
       this.company = {
         id: res.companyId,
         name: res.companyName
-        // manager: res.companyManage
       }
     }
   }
