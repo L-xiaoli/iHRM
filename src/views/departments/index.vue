@@ -13,32 +13,39 @@
     </div>
   </div>
 </template>
-
-
 <script>
 import TreeTools from './components/tree-tools'
+import { GetDepartmentList } from '@/api/departments'
 export default {
   components: {
     TreeTools
   },
   data() {
     return {
-      company: { name: '江苏传智播客教育科技股份有限公司', manager: '负责人' },
-      departs: [{ name: '总裁办', manager: '曹操', children: [{ name: '董事会', manager: '曹丕' }] },
-      { name: '行政部', manager: '刘备' },
-      { name: '人事部', manager: '孙权' }],
+      company: { id: '', name: '1', manager: '负责人' },
+      departs: [],
       defaultProps: {
         label: 'name' // 表示 从这个属性显示内容
       },
       isRoot: false // 控制编辑和删除部门下拉菜单是否显示
     }
   },
+  created() {
+    this.getDeparList()
+  },
   methods: {
-    handleNodeClick(data) {
-      console.log(data);
+    // 获取
+    async getDeparList() {
+      const res = await GetDepartmentList()
+      console.log(res)
+      this.departs = res.depts
+      this.company = {
+        id: res.companyId,
+        name: res.companyName,
+        manager: res.companyManage
+      }
     }
   }
-
 }
 </script>
 <style scoped>

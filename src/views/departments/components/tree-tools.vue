@@ -16,7 +16,7 @@
         <el-col>
           <!-- 下拉菜单 element -->
           <el-dropdown>
-            <span> 操作<i class="el-icon-arrow-down" /> </span>
+            <span> 操作<i class="el-icon-arrow-down"></i> </span>
             <!-- 下拉菜单 -->
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>添加子部门</el-dropdown-item>
@@ -37,7 +37,7 @@ export default {
   props: {
     treeNode: {
       type: Object, // 对象类型
-      required: true  //必传
+      required: true
     },
     isRoot: {
       type: Boolean,
