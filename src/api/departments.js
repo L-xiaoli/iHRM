@@ -8,16 +8,16 @@ import request from '@/utils/request'
 export function getDepartmentList() {
   return request({
     url: '/company/department',
-    methods: 'GET'
+    methods: 'get'
   })
 }
 /**
  * 根据ID删除部门
  */
-export function delDepartmentById(id) {
+export function delDepartments(id) {
   return request({
     url: `/company/department/${id}`,
-    methods: 'delete'
+    method: 'delete'
   })
 }
 /**

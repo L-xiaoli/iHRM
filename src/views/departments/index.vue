@@ -19,7 +19,12 @@
           />
         </el-tree>
       </el-card>
-      <add-dept :showDialog="isShowDialog" @close="isShowDialog = false" />
+      <add-dept
+        v-if="isShowDialog"
+        :tree-node="node"
+        :showDialog="isShowDialog"
+        @close="isShowDialog = false"
+      />
     </div>
   </div>
 </template>
@@ -35,7 +40,7 @@ export default {
   },
   data() {
     return {
-      company: { id: '', name: '', manager: '负责人' },
+      company: {},
       departs: [],
       defaultProps: {
         label: 'name' // 表示 从这个属性显示内容
@@ -54,8 +59,9 @@ export default {
       const res = await getDepartmentList()
       this.departs = treeData(res.depts, '')
       this.company = {
-        id: res.companyId,
-        name: res.companyName
+        id: '',
+        name: res.companyName,
+        manager: '负责人'
       }
     }, // 添加部门
     addDepts(node) {

@@ -38,7 +38,7 @@
 import {
   addDepartmentById,
   editDepartmentById,
-  delDepartmentById
+  delDepartments
 } from '@/api/departments'
 
 export default {
@@ -50,7 +50,8 @@ export default {
     isRoot: {
       type: Boolean,
       default: true
-    }
+    },
+    
   },
   data() {
     return {}
@@ -71,7 +72,7 @@ export default {
         this.$confirm('确定要删除该部门吗')
           .then(() => {
             // 如果点击了确定就会进入then
-            return delDepartmentById(this.treeNode.id) // 返回promise对象
+            return delDepartments(this.treeNode.id) // 返回promise对象
           })
           .then(() => {
             //  如果删除成功了  就会进入这里
