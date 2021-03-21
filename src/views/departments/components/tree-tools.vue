@@ -1,4 +1,5 @@
 <template>
+  <!-- <div> -->
   <el-row
     type="flex"
     justify="space-between"
@@ -30,6 +31,7 @@
       </el-row>
     </el-col>
   </el-row>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -38,6 +40,7 @@ import {
   editDepartmentById,
   delDepartmentById
 } from '@/api/departments'
+
 export default {
   props: {
     treeNode: {
@@ -49,10 +52,16 @@ export default {
       default: true
     }
   },
+  data() {
+    return {}
+  },
   methods: {
     // 对部门进行操作
     async Department(command) {
       if (command === 'add') {
+        // 新增
+        // 告诉父组件 显示弹层
+        this.$emit('addDepts', this.treeNode) // 为何传出treeNode 因为是添加子部门 需要当前部门的数据
       } else if (command === 'edit') {
         // 编辑
         editDepartmentById(this.treeNode.id)
