@@ -27,9 +27,16 @@
               />
               <el-table-column label="描述" prop="description" />
               <el-table-column label="操作">
-                <el-button size="small" type="success">分配权限</el-button>
-                <el-button size="small" type="primary">编辑</el-button>
-                <el-button size="small" type="danger">删除</el-button>
+                <template slot-scope="scope">
+                  <el-button size="small" type="success">分配权限</el-button>
+                  <el-button size="small" type="primary">编辑</el-button>
+                  <el-button
+                    size="small"
+                    type="danger"
+                    @click="deleteRole(scope.row.id)"
+                    >删除</el-button
+                  >
+                </template>
               </el-table-column>
             </el-table>
             <!-- 分页组件 -->
@@ -105,7 +112,7 @@
 </template>
 
 <script>
-import { getRoleList, getCompanyInfo } from '@/api/setting'
+import { getRoleList, getCompanyInfo, delRoleById } from '@/api/setting'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Setting',
@@ -116,7 +123,7 @@ export default {
     return {
       queryInfo: {
         page: 1,
-        pagesize: 5,
+        pagesize: 2,
         total: 0 // 总数
       },
       roleList: [], //角色列表
@@ -134,14 +141,29 @@ export default {
       this.queryInfo.total = res.total
       this.roleList = res.rows
     },
+    // 分页
     handleCurrentChange(val) {
       this.queryInfo.page = val
       this.getAllRole()
     },
+    // 获取公司信息
     async getCompanyInfo() {
       const res = await getCompanyInfo(this.companyId)
       console.log(res)
       this.companyInfo = res
+    },
+    // 删除角色
+    async deleteRole(id) {
+      await this.$confirm('确认删除该角色吗')
+      await delRoleById(id)
+      //TODO:  解决BUG:最后页码的最后一页，只剩一条数据时，点击删除后：页码会-1，但是对应的用户信息 还是停留在上一页为空的状态，并且删除后页码-1，也必须在页码总数大于1的情况，不然就为0页了，最少也是一页
+      if (document.querySelectorAll('.el-card tbody tr').length === 1) {
+        this.queryInfo.page =
+          this.queryInfo.page > 1 ? this.queryInfo.page - 1 : 1
+      }
+      //重新请求最新的数据
+      this.getAllRole()
+      this.$message.success('删除成功!')
     }
   }
 }
