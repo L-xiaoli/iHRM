@@ -8,3 +8,12 @@ export function getRoleList(params) {
     params
   })
 }
+
+/**
+ * 根据id查询企业
+ * ***/
+export function getCompanyInfo(companyId) {
+  return request({
+    url: `/company/${companyId}`
+  })
+}

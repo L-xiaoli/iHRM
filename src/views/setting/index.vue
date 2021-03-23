@@ -59,14 +59,33 @@
               :closable="false"
             />
             <el-form label-width="120px" style="margin-top:50px">
-              <el-form-item label="公司名称">
-                <el-input disabled style="width:400px" />
+              <el-form-item label="企业名称">
+                <el-input
+                  disabled
+                  style="width:400px"
+                  v-model="companyInfo.companyAddress"
+                />
               </el-form-item>
               <el-form-item label="公司地址">
-                <el-input disabled style="width:400px" />
+                <el-input
+                  disabled
+                  style="width:400px"
+                  v-model="companyInfo.name"
+                />
+              </el-form-item>
+              <el-form-item label="电话">
+                <el-input
+                  disabled
+                  style="width:400px"
+                  v-model="companyInfo.companyPhone"
+                />
               </el-form-item>
               <el-form-item label="邮箱">
-                <el-input disabled style="width:400px" />
+                <el-input
+                  disabled
+                  style="width:400px"
+                  v-model="companyInfo.mailbox"
+                />
               </el-form-item>
               <el-form-item label="备注">
                 <el-input
@@ -74,6 +93,7 @@
                   :rows="3"
                   disabled
                   style="width:400px"
+                  v-model="companyInfo.remarks"
                 />
               </el-form-item>
             </el-form>
@@ -85,10 +105,13 @@
 </template>
 
 <script>
-import { getRoleList } from '@/api/setting'
+import { getRoleList, getCompanyInfo } from '@/api/setting'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Setting',
-
+  computed: {
+    ...mapGetters(['companyId'])
+  },
   data() {
     return {
       queryInfo: {
@@ -96,11 +119,13 @@ export default {
         pagesize: 5,
         total: 0 // 总数
       },
-      roleList: [] //角色列表
+      roleList: [], //角色列表
+      companyInfo: {} // 公司信息
     }
   },
   created() {
     this.getAllRole()
+    this.getCompanyInfo()
   },
   methods: {
     // 获取角色列表
@@ -112,6 +137,11 @@ export default {
     handleCurrentChange(val) {
       this.queryInfo.page = val
       this.getAllRole()
+    },
+    async getCompanyInfo() {
+      const res = await getCompanyInfo(this.companyId)
+      console.log(res)
+      this.companyInfo = res
     }
   }
 }
