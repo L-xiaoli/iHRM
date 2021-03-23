@@ -56,7 +56,8 @@ import {
   getDepartmentList,
   getEmployeeSimple,
   addDepartment,
-  getDeptDetail
+  getDeptDetail,
+  updateDepartments
 } from '@/api/departments'
 export default {
   name: 'AddDept',
@@ -72,23 +73,56 @@ export default {
   },
 
   data() {
-    // * 检查同级部门下 是否有重复的部门名称
+    // 现在定义一个函数 这个函数的目的是 去找 同级部门下 是否有重复的部门名称
+    // const checkNameRepeat = async (rule, value, callback) => {
+    //   // 先要获取最新的组织架构数据
+    //   const { depts } = await getDepartmentList()
+    //   // depts是所有的部门数据
+    //   // 如何去找技术部所有的子节点
+    //   const isRepeat = depts
+    //     .filter(item => item.pid === this.treeNode.id)
+    //     .some(item => item.name === value)
+    //   isRepeat
+    //     ? callback(new Error(`同级部门下已经有${value}的部门了`))
+    //     : callback()
+    // }
+    // // * 检查同级部门下 是否有重复的部门名称
     const checkNameRepeat = async (rule, value, callback) => {
       // value 是部门名称
       const { depts } = await getDepartmentList()
-      const isRepeat = depts
-        .filter(item => item.pid === this.treeNode.id)
-        .some(item => item.name === value)
-      // 如果isRepeat为true 则有重复的
+      let isRepeat = false // 如果isRepeat为true 则有重复的
+      if (this.deptForm.id) {
+        // 编辑状态(同级部门名字不能重复（排除自己）)
+        isRepeat = depts
+          .filter(
+            item =>
+              item.pid === this.treeNode.pid && item.id !== this.deptForm.id
+          )
+          .some(item => item.name === value)
+      } else {
+        // 新增状态(同级部门名字不能重复)
+        isRepeat = depts
+          .filter(item => item.pid === this.treeNode.id)
+          .some(item => item.name === value)
+      }
       isRepeat
-        ? callback(new Error(`组织架构中已经有部门使用${value}名称`))
+        ? callback(new Error(`同级部门下已经有${value}的部门了`))
         : callback()
     }
     // * 检查编码重复
     const checkCodeRepeat = async (rule, value, callback) => {
       // 先要获取最新的组织架构数据
       const { depts } = await getDepartmentList()
-      const isRepeat = depts.some(item => item.code === value && value) // 这里加一个 value不为空 因为我们的部门有可能没有code
+      let isRepeat = false
+      if (this.deptForm.id) {
+        // 编辑状态:不能有一样的code(除了自己)
+        isRepeat = depts
+          .filter(item => item.id !== this.treeNode.id)
+          .some(item => item.code === value && value)
+      } else {
+        // 新增状态
+        isRepeat = depts.some(item => item.code === value && value) // 这里加一个 value不为空 因为我们的部门有可能没有code
+      }
       isRepeat
         ? callback(new Error(`组织架构中已经有部门使用${value}编码`))
         : callback()
@@ -159,24 +193,36 @@ export default {
     },
     // 获取详情
     async getDeptDetail(id) {
-      console.log(id)
       this.deptForm = await getDeptDetail(id)
-      console.log(this.deptForm)
       // props 传值是异步的 id不能this.treeNode.id，用父组件传入的方式接受id
     },
     addDepts() {
       this.$refs.deptRuleForm.validate(async valid => {
         if (valid) {
-          console.log(this.deptForm, this.treeNode.id)
-          await addDepartment({ ...this.deptForm, pid: this.treeNode.id }) // 调用新增接口 添加父部门的id
+          if (this.deptForm.id) {
+            // 编辑
+            await updateDepartments(this.deptForm)
+            this.$message.success('修改成功！')
+          } else {
+            // 新增
+            await addDepartment({ ...this.deptForm, pid: this.treeNode.id })
+            this.$message.success('添加成功！')
+          }
           // 子组件 update:固定写法 (update:props名称, 值)
           this.$emit('success') // 触发自定义事件
-          this.$message.success('添加成功！')
+
           this.$emit('update:showDialog', false) // 触发事件
         }
       })
     },
     btnCancel() {
+      // 重置数据  因为resetFields 只能重置 表单上的数据 非表单上的 比如 编辑中id 不能重置
+      this.deptForm = {
+        name: '',
+        code: '',
+        manager: '',
+        introduce: ''
+      }
       this.$refs.deptRuleForm.resetFields() // 重置校验字段
       this.$emit('update:showDialog', false) // 关闭
     }

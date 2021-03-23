@@ -72,6 +72,7 @@ export default {
     },
     editDepts(node) {
       this.isShowDialog = true
+      this.node = node
       // ! 父组件调用子组件的方法(获取详情)
       this.$refs.addDept.getDeptDetail(node.id) // 直接调用子组件中的方法 传入一个id
     }
