@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增部门" :visible="showDialog" @close="btnCancel">
+  <el-dialog :title="showTitle" :visible="showDialog" @close="btnCancel">
     <el-form
       ref="deptRuleForm"
       :model="deptForm"
@@ -143,6 +143,11 @@ export default {
         ]
       },
       managers: [] // 全部负责人数据
+    }
+  },
+  computed: {
+    showTitle() {
+      return this.deptForm.id ? '编辑部门' : '新增子部门'
     }
   },
   created() {
