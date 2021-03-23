@@ -7,7 +7,11 @@
           <el-tab-pane label="角色管理">
             <!-- 新增角色按钮 -->
             <el-row style="height:60px">
-              <el-button icon="el-icon-plus" size="small" type="primary"
+              <el-button
+                icon="el-icon-plus"
+                size="small"
+                type="primary"
+                @click="showRoleDialog = true"
                 >新增角色</el-button
               >
             </el-row>
@@ -29,7 +33,12 @@
               <el-table-column label="操作">
                 <template slot-scope="scope">
                   <el-button size="small" type="success">分配权限</el-button>
-                  <el-button size="small" type="primary">编辑</el-button>
+                  <el-button
+                    size="small"
+                    type="primary"
+                    @click="editRole(scope.row.id)"
+                    >编辑</el-button
+                  >
                   <el-button
                     size="small"
                     type="danger"
@@ -65,7 +74,7 @@
               show-icon
               :closable="false"
             />
-            <el-form label-width="120px" style="margin-top:50px">
+            <el-form ref="roleForm" label-width="120px" style="margin-top:50px">
               <el-form-item label="企业名称">
                 <el-input
                   disabled
@@ -108,11 +117,42 @@
         </el-tabs>
       </el-card>
     </div>
+    <el-dialog title="编辑弹层" :visible="showRoleDialog" @close="btnCancel">
+      <el-form
+        ref="roleForm"
+        :model="roleForm"
+        :rules="rules"
+        label-width="120px"
+      >
+        <el-form-item label="角色名称" prop="name">
+          <el-input v-model="roleForm.name" />
+        </el-form-item>
+        <el-form-item label="角色描述">
+          <el-input v-model="roleForm.description" />
+        </el-form-item>
+      </el-form>
+      <!-- 底部 -->
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="6">
+          <el-button size="small" @click="btnCancel">取消</el-button>
+          <el-button size="small" type="primary" @click="submitOK"
+            >确定</el-button
+          >
+        </el-col>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getRoleList, getCompanyInfo, delRoleById } from '@/api/setting'
+import {
+  getRoleList,
+  getCompanyInfo,
+  delRoleById,
+  editRole,
+  getRoleDetail,
+  addRole
+} from '@/api/setting'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Setting',
@@ -123,11 +163,19 @@ export default {
     return {
       queryInfo: {
         page: 1,
-        pagesize: 2,
+        pagesize: 5,
         total: 0 // 总数
       },
-      roleList: [], //角色列表
-      companyInfo: {} // 公司信息
+      roleList: [], // 角色列表
+      companyInfo: {}, // 公司信息
+      showRoleDialog: false, // 控制角色弹出层
+      rules: {
+        name: [{ required: true, message: '请输入活动名称', trigger: 'blur' }]
+      },
+      roleForm: {
+        name: null, // 角色名称
+        description: null // 角色描述
+      }
     }
   },
   created() {
@@ -164,6 +212,40 @@ export default {
       //重新请求最新的数据
       this.getAllRole()
       this.$message.success('删除成功!')
+    },
+    // 编辑角色
+    async editRole(id) {
+      this.roleForm = await getRoleDetail(id)
+      this.showRoleDialog = true
+    },
+    // 确认提交
+    async submitOK() {
+      try {
+        await this.$refs.roleForm.validate()
+        if (this.roleForm.id) {
+          // 编辑操作
+          await editRole(this.roleForm)
+          this.$message.success('修改成功!')
+        } else {
+          // 添加操作
+          await addRole(this.roleForm)
+          this.$message.success('新增成功!')
+        }
+        // 重新拉取数据
+        this.getAllRole()
+        this.showRoleDialog = false
+      } catch (error) {
+        this.$message.error('操作失败!')
+      }
+    },
+    // 关闭弹出层
+    btnCancel() {
+      this.roleForm = {
+        name: '',
+        description: ''
+      }
+      this.$refs.roleForm.resetFields()
+      this.showRoleDialog = false
     }
   }
 }
