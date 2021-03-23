@@ -16,11 +16,12 @@
             :tree-node="obj.data"
             @success="getDeparList()"
             @addDepts="addDepts"
+            @editDepts="editDepts"
           />
         </el-tree>
       </el-card>
       <add-dept
-        v-if="isShowDialog"
+        ref="addDept"
         :tree-node="node"
         :showDialog.sync="isShowDialog"
         @success="getDeparList()"
@@ -68,6 +69,13 @@ export default {
     addDepts(node) {
       this.isShowDialog = true
       this.node = node
+    },
+    editDepts(node) {
+      this.isShowDialog = true
+      this.node = node
+      console.log(node.id)
+      // ! 父组件调用子组件的方法(获取详情)
+      this.$refs.addDept.getDeptDetail(node.id) // 直接调用子组件中的方法 传入一个id
     }
   }
 }

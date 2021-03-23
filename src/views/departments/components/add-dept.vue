@@ -55,7 +55,8 @@
 import {
   getDepartmentList,
   getEmployeeSimple,
-  addDepartment
+  addDepartment,
+  getDeptDetail
 } from '@/api/departments'
 export default {
   name: 'AddDept',
@@ -151,7 +152,13 @@ export default {
     async getAllManager() {
       this.managers = await getEmployeeSimple()
     },
-
+    // 获取详情
+    async getDeptDetail(id) {
+      console.log(id)
+      this.deptForm = await getDeptDetail(id)
+      console.log(this.deptForm)
+      // props 传值是异步的 id不能this.treeNode.id，用父组件传入的方式接受id
+    },
     addDepts() {
       this.$refs.deptRuleForm.validate(async valid => {
         if (valid) {

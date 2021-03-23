@@ -35,11 +35,7 @@
 </template>
 
 <script>
-import {
-  addDepartmentById,
-  editDepartmentById,
-  delDepartments
-} from '@/api/departments'
+import { delDepartments } from '@/api/departments'
 
 export default {
   props: {
@@ -50,8 +46,7 @@ export default {
     isRoot: {
       type: Boolean,
       default: true
-    },
-    
+    }
   },
   data() {
     return {}
@@ -65,8 +60,8 @@ export default {
         this.$emit('addDepts', this.treeNode) // 为何传出treeNode 因为是添加子部门 需要当前部门的数据
       } else if (command === 'edit') {
         // 编辑
-        editDepartmentById(this.treeNode.id)
-        console.log(res)
+        this.$emit('editDepts', this.treeNode)
+        // editDepartmentById(this.treeNode.id)
       } else if (command === 'delete') {
         //  删除操作
         this.$confirm('确定要删除该部门吗')

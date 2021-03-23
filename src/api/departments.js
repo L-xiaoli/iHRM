@@ -8,7 +8,7 @@ import request from '@/utils/request'
 export function getDepartmentList() {
   return request({
     url: '/company/department',
-    methods: 'get'
+    method: 'get'
   })
 }
 /**
@@ -35,7 +35,16 @@ export function getEmployeeSimple() {
 export function addDepartment(data) {
   return request({
     url: '/company/department',
-    methods: 'post',
+    method: 'post',
     data
+  })
+}
+/**
+ * 根据ID获取部门详情
+ */
+export function getDeptDetail(id) {
+  return request({
+    url: `/company/department/${id}`,
+    method: 'get'
   })
 }
