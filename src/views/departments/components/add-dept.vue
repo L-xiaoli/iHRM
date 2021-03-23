@@ -1,9 +1,9 @@
 <template>
   <el-dialog title="新增部门" :visible.sync="showDialog">
     <el-form
+      ref="deptRuleForm"
       :model="deptForm"
       :rules="rules"
-      ref="deptRuleForm"
       label-width="120px"
     >
       <el-form-item label="部门名称" prop="name">
@@ -26,8 +26,12 @@
           style="width:80%"
           placeholder="请选择"
         >
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <el-option
+            v-for="manager in managers"
+            :key="manager.id"
+            :label="manager.username"
+            :value="manager.username"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="部门介绍" prop="introduce">
@@ -44,13 +48,17 @@
       <el-button type="primary" @click="addDepts('deptRuleForm')" size="small"
         >确 定</el-button
       >
-      <el-button @click="close" size="small">取 消</el-button>
+      <el-button size="small" @click="close">取 消 </el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { getDepartmentList } from '@/api/departments'
+import {
+  getDepartmentList,
+  getEmployeeSimple,
+  addDepartment
+} from '@/api/departments'
 export default {
   name: 'AddDept',
   props: {
@@ -91,11 +99,11 @@ export default {
     return {
       // dialogFormVisible: showDialog,
       deptForm: {
-        name: null, // 部门名称
-        code: null, // 部门编码
-        manager: null, // 	负责人名称
-        introduce: null, // 介绍
-        pid: null // 父级部门ID
+        name: '', // 部门名称
+        code: '', // 部门编码
+        manager: '', // 部门管理者
+        introduce: '', // 部门介绍
+        pid: this.treeNode.id // 父级部门ID
       },
       // 定义校验规则
       rules: {
@@ -137,17 +145,23 @@ export default {
             message: '部门介绍要求1-50个字符'
           }
         ]
-      }
+      },
+      managers: [] // 全部负责人数据
     }
   },
 
   methods: {
-    getAllManager() {},
+    async getAllManager() {
+      this.managers = await getEmployeeSimple()
+    },
     addDepts(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(async valid => {
         if (valid) {
-          alert('submit!')
-        } else {
+          console.log(this.deptForm)
+          await addDepartment(this.deptForm)
+          this.$message.success('添加成功！')
+          // 子组件 update:固定写法 (update:props名称, 值)
+          this.$emit('update:showDialog', false) // 触发事件
           return false
         }
       })

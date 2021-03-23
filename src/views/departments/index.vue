@@ -22,8 +22,8 @@
       <add-dept
         v-if="isShowDialog"
         :tree-node="node"
-        :showDialog="isShowDialog"
-        @close="isShowDialog = false"
+        :showDialog.sync="isShowDialog"
+        @success="getDeparList()"
       />
     </div>
   </div>
@@ -63,7 +63,8 @@ export default {
         name: res.companyName,
         manager: '负责人'
       }
-    }, // 添加部门
+    },
+    // 添加部门
     addDepts(node) {
       this.isShowDialog = true
       this.node = node
