@@ -44,14 +44,14 @@ export const constantRoutes = [
 ]
 // 静态路由
 export const asyncRoutes = [
-  departmentsRouter,
-  employeesRouter,
-  permissionRouter,
-  attendancesRouter,
-  salarysRouter,
-  settingRouter,
-  socialRouter,
-  approvalsRouter
+  departmentsRouter, // 组织架构
+  employeesRouter, // 员工
+  settingRouter, // 公司设置
+  permissionRouter, // 权限管理
+  socialRouter, // 社保
+  attendancesRouter, // 考勤
+  salarysRouter, // 工资
+  approvalsRouter // 审批
 ]
 const createRouter = () =>
   new Router({
