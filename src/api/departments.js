@@ -35,7 +35,7 @@ export function getEmployeeSimple() {
 export function addDepartment(data) {
   return request({
     url: '/company/department',
-    methods: 'POST',
+    methods: 'post',
     data
   })
 }

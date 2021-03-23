@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增部门" :visible.sync="showDialog">
+  <el-dialog title="新增部门" :visible="showDialog" @close="btnCancel">
     <el-form
       ref="deptRuleForm"
       :model="deptForm"
@@ -45,10 +45,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer" type="flex" justify="center">
-      <el-button type="primary" @click="addDepts('deptRuleForm')" size="small"
-        >确 定</el-button
-      >
-      <el-button size="small" @click="close">取 消 </el-button>
+      <el-button type="primary" @click="addDepts" size="small">确 定</el-button>
+      <el-button size="small" @click="btnCancel">取 消 </el-button>
     </div>
   </el-dialog>
 </template>
@@ -71,9 +69,7 @@ export default {
       default: null
     }
   },
-  created() {
-    this.getAllManager()
-  },
+
   data() {
     // * 检查同级部门下 是否有重复的部门名称
     const checkNameRepeat = async (rule, value, callback) => {
@@ -102,8 +98,7 @@ export default {
         name: '', // 部门名称
         code: '', // 部门编码
         manager: '', // 部门管理者
-        introduce: '', // 部门介绍
-        pid: this.treeNode.id // 父级部门ID
+        introduce: '' // 部门介绍
       },
       // 定义校验规则
       rules: {
@@ -149,25 +144,29 @@ export default {
       managers: [] // 全部负责人数据
     }
   },
-
+  created() {
+    this.getAllManager()
+  },
   methods: {
     async getAllManager() {
       this.managers = await getEmployeeSimple()
     },
-    addDepts(formName) {
-      this.$refs[formName].validate(async valid => {
+
+    addDepts() {
+      this.$refs.deptRuleForm.validate(async valid => {
         if (valid) {
-          console.log(this.deptForm)
-          await addDepartment(this.deptForm)
-          this.$message.success('添加成功！')
+          console.log(this.deptForm, this.treeNode.id)
+          await addDepartment({ ...this.deptForm, pid: this.treeNode.id }) // 调用新增接口 添加父部门的id
           // 子组件 update:固定写法 (update:props名称, 值)
+          this.$emit('success') // 触发自定义事件
+          this.$message.success('添加成功！')
           this.$emit('update:showDialog', false) // 触发事件
-          return false
         }
       })
     },
-    close() {
-      this.$emit('close')
+    btnCancel() {
+      this.$refs.deptRuleForm.resetFields() // 重置校验字段
+      this.$emit('update:showDialog', false) // 关闭
     }
   }
 }
