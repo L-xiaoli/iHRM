@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard-container">
+  <div v-loading="loading" class="dashboard-container">
     <div class="app-container">
       <!-- 实现页面的基本布局 -->
       <el-card class="tree-card">
@@ -48,7 +48,8 @@ export default {
       },
       isRoot: false, // 控制编辑和删除部门下拉菜单是否显示
       isShowDialog: false, // 控制添加部门弹窗框
-      node: null // 当前点击的node
+      node: null, // 当前点击的node
+      loading: false // 用来控制进度弹层的显示和隐藏
     }
   },
   created() {
@@ -57,6 +58,7 @@ export default {
   methods: {
     // 获取
     async getDeparList() {
+      this.loading = true
       const res = await getDepartmentList()
       this.departs = treeData(res.depts, '')
       this.company = {
@@ -64,6 +66,7 @@ export default {
         name: res.companyName,
         manager: '负责人'
       }
+      this.loading = false
     },
     // 添加部门
     addDepts(node) {
