@@ -15,36 +15,40 @@
       </page-tools>
       <!-- 放置表格和分页 -->
       <el-card>
-        <el-table border :data="employeeList" v-loading="loading">
-          <el-table-column label="序号" sortable="" type="index" />
-          <el-table-column label="姓名" sortable="" prop="username" />
-          <el-table-column label="工号" sortable="" prop="workNumber" />
+        <el-table border :data="employeeList" v-loading="loading"  >
+          <el-table-column label="序号" sortable="" type="index" width="100" />
+          <el-table-column label="姓名" sortable="" prop="username" width="120"/>
+          <el-table-column label="手机号" sortable="" prop="mobile" width="160"/>
+          <el-table-column label="工号" sortable="" prop="workNumber" width="120"/>
           <el-table-column
             label="聘用形式"
             sortable=""
             prop="formOfEmployment"
             :formatter="formatEmployment"
+            width="140"
           />
-          <el-table-column label="部门" sortable="" prop="departmentName" />
-          <el-table-column label="入职时间" sortable="">
+          <el-table-column label="部门" sortable="" prop="departmentName" width="120"/>
+          <el-table-column label="入职时间" sortable="" width="160">
             <template scope="{row}">
               {{ row.timeOfEntry | formatDate }}
             </template>
           </el-table-column>
-          <el-table-column label="账户状态" sortable="" prop="enableState">
+          <el-table-column label="账户状态" sortable="" prop="enableState" width="120">
             <template scope="{row}">
               <!-- 根据当前状态来确定 是否打开开关 -->
               <el-switch :value="row.enableState === 1"> </el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="操作" sortable="" fixed="right" width="280">
-            <template>
+          <el-table-column label="操作" sortable="" fixed="right" width="260">
+            <template scope="{row}">
               <el-button type="text" size="small">查看</el-button>
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
               <el-button type="text" size="small">角色</el-button>
-              <el-button type="text" size="small">删除</el-button>
+              <el-button type="text" size="small" @click="delEmployee(row.id)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -70,7 +74,7 @@
   </div>
 </template>
 <script>
-import { getEmployeeList } from '@/api/employees'
+import { getEmployeeList, delEmployeeById } from '@/api/employees'
 import EmployeeEnum from '@/api/constant/employees'
 export default {
   name: 'Employees',
@@ -108,6 +112,22 @@ export default {
       const obj = EmployeeEnum.hireType.find(item => item.id === cellValue)
       return obj ? obj.value : '未知'
       // row:行 column:列 cellValue：单元格的数据 index：索引
+    },
+    // 删除员工
+    async delEmployee(id) {
+      try {
+        await this.$confirm('您确定删除该员工吗?')
+        await delEmployeeById(id)
+        // if (document.querySelectorAll('.el-card tbody tr').length === 1) {
+        //   this.queryInfo.page =
+        //     this.queryInfo.page > 1 ? this.queryInfo.page - 1 : 1
+        // }
+        // console.log(document.querySelectorAll('el-card  tbody tr'))
+        this.getEmployeeList()
+        this.$message.success('删除成功！')
+      } catch (error) {
+        this.$message.error('删除操作失败！')
+      }
     }
   }
 }
