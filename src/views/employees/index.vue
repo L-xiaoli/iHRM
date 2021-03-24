@@ -15,14 +15,18 @@
       </page-tools>
       <!-- 放置表格和分页 -->
       <el-card>
-        <el-table border>
-          <el-table-column label="序号" sortable="" />
-          <el-table-column label="姓名" sortable="" />
-          <el-table-column label="工号" sortable="" />
-          <el-table-column label="聘用形式" sortable="" />
-          <el-table-column label="部门" sortable="" />
-          <el-table-column label="入职时间" sortable="" />
-          <el-table-column label="账户状态" sortable="" />
+        <el-table border :data="employeeList" v-loading="loading">
+          <el-table-column label="序号" sortable="" type="index" />
+          <el-table-column label="姓名" sortable="" prop="username" />
+          <el-table-column label="工号" sortable="" prop="workNumber" />
+          <el-table-column
+            label="聘用形式"
+            sortable=""
+            prop="formOfEmployment"
+          />
+          <el-table-column label="部门" sortable="" prop="departmentName" />
+          <el-table-column label="入职时间" sortable="" prop="timeOfEntry" />
+          <el-table-column label="账户状态" sortable="" prop="enableState" />
           <el-table-column label="操作" sortable="" fixed="right" width="280">
             <template>
               <el-button type="text" size="small">查看</el-button>
@@ -41,15 +45,53 @@
           align="middle"
           style="height: 60px"
         >
-          <el-pagination layout="prev, pager, next" />
+          <!-- <el-pagination layout="prev, pager, next" /> -->
+          <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page="queryInfo.page"
+            :page-size="queryInfo.size"
+            layout="total, prev, pager, next"
+            :total="queryInfo.total"
+          >
+          </el-pagination>
         </el-row>
       </el-card>
     </div>
   </div>
 </template>
 <script>
+import { getEmployeeList } from '@/api/employees'
 export default {
-  name: 'Employees'
+  name: 'Employees',
+  data() {
+    return {
+      employeeList: [],
+      queryInfo: {
+        page: 1,
+        size: 5,
+        total: null
+      },
+      loading: false
+    }
+  },
+  created() {
+    this.getEmployeeList()
+  },
+  methods: {
+    // 获取员工的综合列表数据
+    async getEmployeeList() {
+      this.loading = true
+      const res = await getEmployeeList(this.queryInfo)
+      this.queryInfo.total = res.total
+      this.employeeList = res.rows
+      this.loading = false
+    },
+    // 分页
+    handleCurrentChange(val) {
+      this.queryInfo.page = val
+      this.getEmployeeList()
+    }
+  }
 }
 </script>
 
