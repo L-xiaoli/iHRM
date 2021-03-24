@@ -8,7 +8,7 @@
           <slot name="before" />
         </div>
       </el-col>
-      <el-col type="flex" justify="flex-end">
+      <el-col class="right">
         <!-- 定义后面的插槽 -->
         <slot name="after" />
       </el-col>

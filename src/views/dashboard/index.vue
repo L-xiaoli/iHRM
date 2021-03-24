@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <page-tools :showBefore="showBefore">
+    <page-tools :showBefore="true">
       <!-- <span slot="before">aaaa</span> -->
       <template v-slot:before>
         <span class="dashboard-text">name: {{ name }}</span>
@@ -18,9 +18,7 @@ export default {
     ...mapGetters(['name'])
   },
   data() {
-    return {
-      showBefore: true // 隐藏左边的插槽
-    }
+    return {}
   }
 }
 </script>
