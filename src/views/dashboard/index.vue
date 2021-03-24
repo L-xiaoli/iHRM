@@ -1,18 +1,26 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
+    <page-tools :showBefore="showBefore">
+      <!-- <span slot="before">aaaa</span> -->
+      <template v-slot:before>
+        <span class="dashboard-text">name: {{ name }}</span>
+      </template>
+    </page-tools>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Dashboard',
+
   computed: {
-    ...mapGetters([
-      'name'
-    ])
+    ...mapGetters(['name'])
+  },
+  data() {
+    return {
+      showBefore: true // 隐藏左边的插槽
+    }
   }
 }
 </script>
