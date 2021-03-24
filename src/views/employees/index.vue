@@ -31,7 +31,12 @@
               {{ row.timeOfEntry | formatDate }}
             </template>
           </el-table-column>
-          <el-table-column label="账户状态" sortable="" prop="enableState" />
+          <el-table-column label="账户状态" sortable="" prop="enableState">
+            <template scope="{row}">
+              <!-- 根据当前状态来确定 是否打开开关 -->
+              <el-switch :value="row.enableState === 1"> </el-switch>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" sortable="" fixed="right" width="280">
             <template>
               <el-button type="text" size="small">查看</el-button>
