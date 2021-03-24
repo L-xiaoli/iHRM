@@ -9,7 +9,7 @@
       <template v-slot:after>
         <el-button size="small" type="warning">excel导入</el-button>
         <el-button size="small" type="danger">excel导出</el-button>
-        <el-button size="small" type="primary" @click="showAddDialog = true"
+        <el-button size="small" type="primary" @click="addDialog = true"
           >新增员工</el-button
         >
       </template>
@@ -81,7 +81,7 @@
         </el-pagination>
       </el-row>
     </el-card>
-    <add-employee :addDialog.sync="showAddDialog" />
+    <add-employee :addDialog.sync="addDialog" />
   </div>
 </template>
 <script>
@@ -102,7 +102,7 @@ export default {
         total: null
       },
       loading: false,
-      showAddDialog: false
+      addDialog: false
     }
   },
   created() {
