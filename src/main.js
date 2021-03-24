@@ -14,11 +14,17 @@ import Component from '@/components'
 import '@/icons' // icon
 import '@/permission' // permission control
 import * as directives from '@/directives' // 自定义指令
+import * as filters from '@/filters/index'
 // 注册自定义指令
 // 遍历所有的导出的指令对象 完成自定义全局注册
 Object.keys(directives).forEach(key => {
   // 注册自定义指令
   Vue.directive(key, directives[key])
+})
+// 注册全局的过滤器
+Object.keys(filters).forEach(key => {
+  // 注册过滤器
+  Vue.filter(key, filters[key])
 })
 
 // set ElementUI lang to EN
