@@ -13,7 +13,9 @@
           @click="$router.push('/import?type=user')"
           >excel导入</el-button
         >
-        <el-button size="small" type="danger">excel导出</el-button>
+        <el-button size="small" type="danger" @click="exportDate"
+          >excel导出</el-button
+        >
         <el-button size="small" type="primary" @click="addDialog = true"
           >新增员工</el-button
         >
@@ -93,6 +95,7 @@
 import { getEmployeeList, delEmployeeById } from '@/api/employees'
 import EmployeeEnum from '@/api/constant/employees'
 import AddEmployee from './components/add-employee'
+import { formatDate } from '@/filters/index'
 export default {
   name: 'Employees',
   components: {
@@ -150,6 +153,65 @@ export default {
         return false
         // this.$message.info('取消删除！')
       }
+    },
+    // 导出excel
+    exportDate() {
+      // 表头对应关系
+      const headers = {
+        手机号: 'mobile',
+        姓名: 'username',
+        入职日期: 'timeOfEntry',
+        聘用形式: 'formOfEmployment',
+        转正日期: 'correctionTime',
+        工号: 'workNumber',
+        部门: 'departmentName'
+      }
+
+      // 懒加载
+      import('@/vendor/Export2Excel').then(async excel => {
+        // 获取所有数据
+        //  没有获取所有数据的接口，所以就查询列表数据page=1,一页的大小为总条数的数据
+        const { rows } = await getEmployeeList({
+          page: 1,
+          size: this.queryInfo.total
+        })
+        // 调用方法 数组转化成二维数组 [{}] => [[]]
+        const data = this.formatJson(headers, rows)
+        const multiHeader = [['姓名', '主要信息', '', '', '', '', '部门']]
+        const merges = ['A1:A2', 'B1:F1', 'G1:G2']
+        excel.export_json_to_excel({
+          header: Object.keys(headers), // 导出数据的表头
+          data, // 导出的具体数据
+          filename: '员工信息表', // 导出文件名
+          multiHeader, // 复杂表头
+          merges, // 合并选项
+          autoWidth: true, // 单元格是否要自适应宽度
+          bookType: 'xlsx' // 导出文件类型
+        })
+      })
+    },
+    // 该方法负责将数组转化成二维数组, [{},{}] => [[],[]]  数据结构一定要与表头的顺序对应
+    formatJson(headers, rows) {
+      // 首先遍历数组
+      // [{ username: '张三'},{},{}]  => [[’张三'],[],[]]
+      return rows.map(item => {
+        return Object.keys(headers).map(key => {
+          if (
+            headers[key] === 'timeOfEntry' ||
+            headers[key] === 'correctionTime'
+          ) {
+            // 转换为excel日期
+            return formatDate(item[headers[key]]) // 返回格式化之前的时间
+          } else if (headers[key] === 'formOfEmployment') {
+            // 转换聘用形式
+            var en = EmployeeEnum.hireType.find(
+              obj => obj.id === item[headers[key]]
+            )
+            return en ? en.value : '未知'
+          }
+          return item[headers[key]]
+        }) // => ["张三", "13811"，"2018","1", "2018", "10002"]
+      })
     }
   }
 }
