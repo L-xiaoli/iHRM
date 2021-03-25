@@ -9,45 +9,49 @@ export default {
   name: '',
 
   data() {
-    return {}
+    return {
+      type: this.$route.query.type
+    }
   },
   methods: {
     async success({ header, results }) {
       //header results 的数据是中文
       // 如果是导入员工
-      const userRelations = {
-        入职日期: 'timeOfEntry',
-        手机号: 'mobile',
-        姓名: 'username',
-        转正日期: 'correctionTime',
-        工号: 'workNumber'
-      }
-      const newArr = results.map(item => {
-        let userInfo = {}
-        // Object.keys(item):中文数组(key)
-        Object.keys(item).forEach(key => {
-          // userRelations[key]: 找到中文对应的英文名称（username）
-          // item[key]:表格中的值(张三)
-          if (
-            userRelations[key] === 'timeOfEntry' ||
-            userRelations[key] === 'correctionTime'
-          ) {
-            // 后端接口限制了不能是字符串，要求转换为时间类型
-            userInfo[userRelations[key]] = new Date(
-              this.formatDate(item[key], '/')
-            )
-            return
-          }
-          userInfo[userRelations[key]] = item[key]
+      if (this.type === 'user') {
+        const userRelations = {
+          入职日期: 'timeOfEntry',
+          手机号: 'mobile',
+          姓名: 'username',
+          转正日期: 'correctionTime',
+          工号: 'workNumber'
+        }
+        const newArr = results.map(item => {
+          let userInfo = {}
+          // Object.keys(item):中文数组(key)
+          Object.keys(item).forEach(key => {
+            // userRelations[key]: 找到中文对应的英文名称（username）
+            // item[key]:表格中的值(张三)
+            if (
+              userRelations[key] === 'timeOfEntry' ||
+              userRelations[key] === 'correctionTime'
+            ) {
+              // 后端接口限制了不能是字符串，要求转换为时间类型
+              userInfo[userRelations[key]] = new Date(
+                this.formatDate(item[key], '/')
+              )
+              return
+            }
+            userInfo[userRelations[key]] = item[key]
+          })
+          return userInfo
         })
-        return userInfo
-      })
-      try {
-        await importEmployee(newArr)
-        this.$message.success('导入Excel成功！')
-        this.$router.back()
-      } catch (error) {
-        this.$message.error('导入Excel失败！')
+        try {
+          await importEmployee(newArr)
+          this.$message.success('导入Excel成功！')
+          this.$router.back()
+        } catch (error) {
+          this.$message.error('导入Excel失败！')
+        }
       }
     },
     // 转换Excel的日期格式
