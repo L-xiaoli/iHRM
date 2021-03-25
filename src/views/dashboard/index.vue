@@ -1,11 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <page-tools :showBefore="true">
-      <!-- <span slot="before">aaaa</span> -->
-      <template v-slot:before>
-        <span class="dashboard-text">name: {{ name }}</span>
-      </template>
-    </page-tools>
+    <span class="dashboard-text">name: {{ name }}</span>
   </div>
 </template>
 

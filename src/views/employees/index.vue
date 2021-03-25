@@ -142,7 +142,8 @@ export default {
         this.getEmployeeList()
         this.$message.success('删除成功！')
       } catch (error) {
-        this.$message.error('删除操作失败！')
+        return false
+        // this.$message.info('取消删除！')
       }
     }
   }

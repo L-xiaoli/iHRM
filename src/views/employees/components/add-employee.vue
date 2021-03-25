@@ -55,13 +55,14 @@
           <el-input
             v-model="employeeForm.departmentName"
             placeholder="请输入部门"
-            @focus="getDeptList()"
+            @click.native="getDeptList()"
           ></el-input>
           <el-tree
             v-if="showTree"
             :data="treeData"
-            :props="defaultProps"
+            :props="{ label: 'name' }"
             @node-click="selectNode"
+            v-loading="loading"
             default-expand-all
           ></el-tree>
         </el-form-item>
@@ -137,9 +138,6 @@ export default {
           { required: true, message: '部门不能为空', trigger: 'change' }
         ],
         timeOfEntry: [{ required: true, message: '入职时间', trigger: 'blur' }]
-      },
-      defaultProps: {
-        label: 'name' // 表示 从这个属性显示内容
       }
     }
   },
@@ -162,12 +160,11 @@ export default {
     },
     // 提交表单
     async addForm() {
-      await this.$refs.employeeForm.validate()
       try {
+        await this.$refs.employeeForm.validate()
+        // 校验成功
         await addEmployee(this.employeeForm)
-        // this.$emit('success')
-        // await addEmployee(this.employeeForm)
-        this.$parent.getEmployeeList()
+        this.$parent.getEmployeeList && this.$parent.getEmployeeList() // 判断是否有这个方法，有则执行
         this.$message.success('新增成功！')
         this.$parent.addDialog = false
       } catch (error) {
@@ -176,7 +173,7 @@ export default {
     },
     // 获取部门信息（转为树型结构）
     async getDeptList() {
-      this.showTree = true
+      this.showTree = !this.showTree
       this.loading = true
       const res = await getDepartmentList()
       this.treeData = treeData(res.depts, '')
@@ -184,7 +181,6 @@ export default {
       this.loading = false
     },
     selectNode(node) {
-      console.log(node)
       this.employeeForm.departmentName = node.name
       this.showTree = false
     }
