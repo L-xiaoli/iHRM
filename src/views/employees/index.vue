@@ -7,7 +7,12 @@
       </span>
       <!-- 右侧按钮 -->
       <template v-slot:after>
-        <el-button size="small" type="warning">excel导入</el-button>
+        <el-button
+          size="small"
+          type="warning"
+          @click="$router.push('/import?type=user')"
+          >excel导入</el-button
+        >
         <el-button size="small" type="danger">excel导出</el-button>
         <el-button size="small" type="primary" @click="addDialog = true"
           >新增员工</el-button
@@ -98,7 +103,7 @@ export default {
       employeeList: [],
       queryInfo: {
         page: 1,
-        size: 5,
+        size: 10,
         total: null
       },
       loading: false,
