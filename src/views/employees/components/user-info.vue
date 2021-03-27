@@ -471,21 +471,21 @@ export default {
     this.getUserDetailById()
   },
   methods: {
-    // 获取员工详情
+    // 获取员工基本信息
     async getUserDetailById() {
       this.userInfo = await getUserDetailById(this.userId)
     },
-    // 保存更新
+    // 更新员工基本信息
     async saveUser() {
       //  调用父组件
       await saveUserDetailById(this.userInfo)
       this.$message.success('保存成功')
     },
-    // 获取员用户详情的基础信息
+    // 获取员基础信息
     async getPersonalDetail() {
       this.formData = await getPersonalDetail(this.userId)
     },
-    // 保存更新
+    // 更新户基础信息
     async savePersonal() {
       await updatePersonal({ ...this.formData, id: this.userId })
       this.$message.success('保存成功')
