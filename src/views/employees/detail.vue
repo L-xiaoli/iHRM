@@ -6,17 +6,24 @@
           <el-tab-pane label="登录账户设置">
             <!-- 放置表单 -->
             <el-form
+              :model="userInfo"
+              :rules="rules"
+              ref="userForm"
               label-width="120px"
               style="margin-left: 120px; margin-top:30px"
             >
-              <el-form-item label="姓名:">
-                <el-input style="width:300px" />
+              <el-form-item label="姓名:" prop="username">
+                <el-input style="width:300px" v-model="userInfo.username" />
               </el-form-item>
-              <el-form-item label="密码:">
-                <el-input style="width:300px" type="password" />
+              <el-form-item label="密码:" prop="password2">
+                <el-input
+                  style="width:300px"
+                  type="password"
+                  v-model="userInfo.password2"
+                />
               </el-form-item>
               <el-form-item>
-                <el-button type="primary">更新</el-button>
+                <el-button type="primary" @click="saveUser">更新</el-button>
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -29,14 +36,54 @@
 </template>
 
 <script>
+import { getUserDetailById } from '@/api/user'
+import { saveUserDetailById } from '@/api/employees'
 export default {
   name: 'Detail',
 
   data() {
-    return {}
+    return {
+      userId: this.$route.params.id, // 当前用户Id
+      userInfo: {
+        //   专门存放基本信息
+        username: '',
+        password2: '' // 获取的password是密文
+      },
+      rules: {
+        username: [
+          { required: true, message: '姓名不能为空', trigger: 'blur' }
+        ],
+        password2: [
+          { required: true, message: '密码不能为空', trigger: 'blur' },
+          { min: 6, max: 9, message: '密码长度6-9位', trigger: 'blur' }
+        ]
+      }
+    }
   },
-
-  methods: {}
+  created() {
+    this.getUserDetail()
+  },
+  methods: {
+    // 获取用户详情
+    async getUserDetail() {
+      const res = await getUserDetailById(this.userId)
+      this.userInfo = res
+    },
+    // 保存用户信息
+    async saveUser() {
+      try {
+        // 校验
+        await this.$refs.userForm.validate()
+        await saveUserDetailById({
+          ...this.userInfo,
+          password: this.userInfo.password2
+        }) // 将新密码的值替换原密码的值
+        this.$message.success('修改用户信息成功！')
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 }
 </script>
 
