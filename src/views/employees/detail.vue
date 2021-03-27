@@ -27,7 +27,12 @@
               </el-form-item>
             </el-form>
           </el-tab-pane>
-          <el-tab-pane label="个人详情" />
+          <el-tab-pane label="个人详情">
+            <!-- 放置个人详情 -->
+            <component :is="userComponent" />
+            <!-- 动态组件（is必须是变量）-->
+            <!-- <user-info /> -->
+          </el-tab-pane>
           <el-tab-pane label="岗位信息" />
         </el-tabs>
       </el-card>
@@ -38,6 +43,7 @@
 <script>
 import { getUserDetailById } from '@/api/user'
 import { saveUserDetailById } from '@/api/employees'
+import UserInfo from './components/user-info'
 export default {
   name: 'Detail',
 
@@ -49,6 +55,7 @@ export default {
         username: '',
         password2: '' // 获取的password是密文
       },
+      userComponent: UserInfo,
       rules: {
         username: [
           { required: true, message: '姓名不能为空', trigger: 'blur' }
