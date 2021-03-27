@@ -35,7 +35,7 @@
           </el-tab-pane>
           <el-tab-pane label="岗位详情">
             <!-- 放置岗位详情 -->
-            <component :is="JobInfo" />
+            <component :is="JobComponent" />
           </el-tab-pane>
         </el-tabs>
       </el-card>
@@ -60,7 +60,7 @@ export default {
         password2: '' // 获取的password是密文
       },
       userComponent: UserInfo,
-      JobInfo: JobInfo,
+      JobComponent: JobInfo,
       rules: {
         username: [
           { required: true, message: '姓名不能为空', trigger: 'blur' }
