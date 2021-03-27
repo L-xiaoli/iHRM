@@ -1,6 +1,20 @@
 <template>
-  <!-- 公共导入组件 -->
-  <upload-excel :onSuccess="success" />
+  <div class="import">
+    <div class="app-container">
+      <el-card>
+        <div>
+          <div>
+            <h2 class="text-center">员工导入</h2>
+            <el-alert type="warning" :closable="false" show-icon>
+              每次导入仅可添加1000名员工，姓名、手机、入职时间、聘用形式为必填项
+            </el-alert>
+          </div>
+          <!-- 公共导入组件 -->
+          <upload-excel :onSuccess="success" />
+        </div>
+      </el-card>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -74,4 +88,8 @@ export default {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style scoped>
+.text-center {
+  text-align: center;
+}
+</style>
