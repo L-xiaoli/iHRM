@@ -21,6 +21,7 @@
 <script>
 import { getRoleList } from '@/api/setting'
 import { getUserDetailById } from '@/api/user'
+import { assignRoles } from '@/api/employees'
 export default {
   props: {
     showRoleDialog: {
@@ -52,10 +53,14 @@ export default {
       const { roleIds } = await getUserDetailById(id)
       this.roleIds = roleIds // 赋值本用户的角色
     },
-    btnSubmit() {
-      console.log(1)
+    async btnSubmit() {
+      await assignRoles({ id: this.userId, roleIds: this.roleIds })
+      this.$message.success('分配角色成功！')
+      //   关闭窗体
+      this.$emit('update:showRoleDialog', false)
     },
     btnCancel() {
+      this.roleIds = [] // 清空原来的数组
       this.$parent.showRoleDialog = false
     }
   }
