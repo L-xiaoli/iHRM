@@ -85,7 +85,7 @@
             <el-button type="text" size="small">转正</el-button>
             <el-button type="text" size="small">调岗</el-button>
             <el-button type="text" size="small">离职</el-button>
-            <el-button type="text" size="small" @click="showRoleDialog = true"
+            <el-button type="text" size="small" @click="editRole(row.id)"
               >角色</el-button
             >
             <el-button type="text" size="small" @click="delEmployee(row.id)"
@@ -113,7 +113,11 @@
         <canvas ref="myCanvas" />
       </el-row>
     </el-dialog>
-    <assign-role :showRoleDialog.sync="showRoleDialog" />
+    <assign-role
+      ref="assignRole"
+      :showRoleDialog.sync="showRoleDialog"
+      :user-id="userId"
+    />
   </div>
 </template>
 <script>
@@ -140,7 +144,8 @@ export default {
       loading: false,
       addDialog: false, // 添加弹层
       showCodeDialog: false, // 二维码弹层
-      showRoleDialog: false //分配角色弹框
+      showRoleDialog: false, //分配角色弹框
+      userId: null
     }
   },
   created() {
@@ -257,6 +262,12 @@ export default {
           // 如果转化的二维码后面信息 是一个地址的话 就会跳转到该地址 如果不是地址就会显示内容
         })
       }
+    },
+    // 编辑角色
+    async editRole(id) {
+      this.userId = id // props传值 是异步的
+      await this.$refs.assignRole.getUserDetailById(id) // 父组件调用子组件方法
+      this.showRoleDialog = true
     }
   }
 }
