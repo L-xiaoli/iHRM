@@ -93,12 +93,13 @@
             />
           </el-select>
         </el-form-item>
-        <!-- 个人头像 -->
+
         <!-- 员工照片 -->
-        <!-- <el-form-item label="员工照片"> -->
-        <!-- 放置上传图片 -->
-        <!-- <ImageUpload /> -->
-        <!-- </el-form-item> -->
+        <el-form-item label="员工照片">
+          <!-- 放置上传图片 -->
+          <!-- ref不要重名 -->
+          <image-upload ref="myStaffPhoto" />
+        </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
             <el-option
@@ -478,9 +479,15 @@ export default {
     this.getUserDetailById()
   },
   methods: {
-    // 获取员工基本信息
+    // 获取员工基本信息(上半部分)
     async getUserDetailById() {
       this.userInfo = await getUserDetailById(this.userId)
+      if (this.userInfo.staffPhoto) {
+        // 这里我们赋值，同时需要给赋值的地址一个标记 upload: true
+        this.$refs.staffPhoto.fileList = [
+          { url: this.userInfo.staffPhoto, upload: true }
+        ]
+      }
     },
     // 更新员工基本信息
     async saveUser() {
@@ -488,9 +495,14 @@ export default {
       await saveUserDetailById(this.userInfo)
       this.$message.success('保存成功')
     },
-    // 获取员基础信息
+    // 获取员基础信息(下半部分)
     async getPersonalDetail() {
       this.formData = await getPersonalDetail(this.userId)
+      if (this.formData.staffPhoto) {
+        this.$refs.myStaffPhoto.fileList = [
+          { url: this.formData.staffPhoto, upload: true }
+        ]
+      }
     },
     // 更新户基础信息
     async savePersonal() {
