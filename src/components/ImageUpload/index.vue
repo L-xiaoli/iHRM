@@ -102,7 +102,6 @@ export default {
           },
           (err, data) => {
             // data返回数据之后 应该如何处理
-            console.log(err || data)
             // data中有一个statusCode === 200 的时候说明上传成功
             if (!err && data.statusCode === 200) {
               //   此时说明文件上传成功  要获取成功的返回地址
