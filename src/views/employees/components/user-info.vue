@@ -1,5 +1,8 @@
 <template>
   <div class="user-info">
+    <div class="goBack">
+      <el-button type="primary" @click="$router.back()">返回</el-button>
+    </div>
     <!-- 个人信息 -->
     <el-form label-width="220px">
       <!-- 工号 入职时间 -->
@@ -59,7 +62,7 @@
           <el-form-item label="员工头像">
             <div class="clearfix">
               <!-- 放置上传图片 -->
-              <ImageUpload />
+              <image-upload ref="staffPhoto" />
             </div>
             <span class="img-text"
               >图片格式为 JPG/JPEG/PNG/PDF 大小在2MB内</span
@@ -69,10 +72,10 @@
       </el-row>
 
       <!-- 保存个人信息 -->
-      <el-row class="inline-info" type="flex" justify="center">
+      <el-row class="inline-info btnImg" type="flex" justify="center">
         <el-col :span="12">
           <el-button type="primary" @click="saveUser">保存更新</el-button>
-          <el-button @click="$router.back()">返回</el-button>
+          <!-- <el-button @click="$router.back()">返回</el-button> -->
         </el-col>
       </el-row>
     </el-form>
@@ -95,11 +98,28 @@
         </el-form-item>
 
         <!-- 员工照片 -->
-        <el-form-item label="员工照片">
-          <!-- 放置上传图片 -->
-          <!-- ref不要重名 -->
-          <image-upload ref="myStaffPhoto" />
-        </el-form-item>
+        <el-row class="inline-info">
+          <el-col :span="18">
+            <el-form-item label="员工照片">
+              <div class="clearfix">
+                <!-- 放置上传图片 -->
+                <!-- ref不要重名 -->
+                <image-upload ref="myStaffPhoto" />
+              </div>
+              <span class="img-text"
+                >图片格式为 JPG/JPEG/PNG/PDF 大小在2MB内</span
+              >
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!-- 保存个人信息 -->
+        <el-row class="inline-info btnImg" type="flex" justify="center">
+          <el-col :span="12">
+            <el-button type="primary" @click="saveUser">保存更新</el-button>
+            <!-- <el-button @click="$router.back()">返回</el-button> -->
+          </el-col>
+        </el-row>
+
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
             <el-option
@@ -491,9 +511,19 @@ export default {
     },
     // 更新员工基本信息
     async saveUser() {
-      //  调用父组件
-      await saveUserDetailById(this.userInfo)
-      this.$message.success('保存成功')
+      // 去读取 员工上传的头像
+      const fileList = this.$refs.staffPhoto.fileList // 读取上传组件的数据
+      if (fileList.some(item => !item.upload)) {
+        //  如果此时去找 upload为false的图片 找到了说明 有图片还没有上传完成
+        this.$message.warning('您当前还有图片没有上传完成！')
+        return
+      }
+      // 通过合并 得到一个新对象
+      await saveUserDetailById({
+        ...this.userInfo,
+        staffPhoto: fileList && fileList.length ? fileList[0].url : ''
+      })
+      this.$message.success('保存基本信息成功')
     },
     // 获取员基础信息(下半部分)
     async getPersonalDetail() {
@@ -506,8 +536,17 @@ export default {
     },
     // 更新户基础信息
     async savePersonal() {
-      await updatePersonal({ ...this.formData, id: this.userId })
-      this.$message.success('保存成功')
+      const fileList = this.$refs.myStaffPhoto.fileList
+      if (fileList.some(item => !item.upload)) {
+        //  如果此时去找 upload为false的图片 找到了说明 有图片还没有上传完成
+        this.$message.warning('您当前还有图片没有上传完成！')
+        return
+      }
+      await updatePersonal({
+        ...this.formData,
+        staffPhoto: fileList && fileList.length ? fileList[0].url : ''
+      })
+      this.$message.success('保存基础信息成功')
     }
   }
 }
@@ -522,5 +561,8 @@ export default {
 .user-info .img-text {
   padding: 10px 0px;
   margin-left: -8%;
+}
+.user-info .btnImg {
+  margin-bottom: 20px;
 }
 </style>
