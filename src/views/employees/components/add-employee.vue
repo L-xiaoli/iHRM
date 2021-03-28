@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      title="收货地址"
+      title="新增员工"
       :visible="addDialog"
       width="40%"
       @close="btnCanel"

@@ -85,7 +85,9 @@
             <el-button type="text" size="small">转正</el-button>
             <el-button type="text" size="small">调岗</el-button>
             <el-button type="text" size="small">离职</el-button>
-            <el-button type="text" size="small">角色</el-button>
+            <el-button type="text" size="small" @click="showRoleDialog = true"
+              >角色</el-button
+            >
             <el-button type="text" size="small" @click="delEmployee(row.id)"
               >删除</el-button
             >
@@ -111,6 +113,7 @@
         <canvas ref="myCanvas" />
       </el-row>
     </el-dialog>
+    <assign-role :showRoleDialog.sync="showRoleDialog" />
   </div>
 </template>
 <script>
@@ -119,10 +122,12 @@ import EmployeeEnum from '@/api/constant/employees'
 import AddEmployee from './components/add-employee'
 import { formatDate } from '@/filters/index'
 import QrCode from 'qrcode'
+import AssignRole from './components/assign-role'
 export default {
   name: 'Employees',
   components: {
-    AddEmployee
+    AddEmployee,
+    AssignRole
   },
   data() {
     return {
@@ -134,7 +139,8 @@ export default {
       },
       loading: false,
       addDialog: false, // 添加弹层
-      showCodeDialog: false // 二维码弹层
+      showCodeDialog: false, // 二维码弹层
+      showRoleDialog: false //分配角色弹框
     }
   },
   created() {

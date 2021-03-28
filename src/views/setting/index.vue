@@ -117,7 +117,11 @@
         </el-tabs>
       </el-card>
     </div>
-    <el-dialog title="编辑弹层" :visible="showRoleDialog" @close="btnCancel">
+    <el-dialog
+      :title="roleForm.id ? '编辑角色' : '新增角色'"
+      :visible="showRoleDialog"
+      @close="btnCancel"
+    >
       <el-form
         ref="roleForm"
         :model="roleForm"
