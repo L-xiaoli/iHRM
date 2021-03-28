@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard-container">
     <span class="dashboard-text">name: {{ name }}</span>
+    <ImageUpload />
   </div>
 </template>
 

@@ -55,13 +55,19 @@
       </el-row>
       <!-- 员工照片 -->
       <el-row class="inline-info">
-        <el-col :span="12">
+        <el-col :span="18">
           <el-form-item label="员工头像">
-            <!-- 放置上传图片 -->
-            <ImageUpload />
+            <div class="clearfix">
+              <!-- 放置上传图片 -->
+              <ImageUpload />
+            </div>
+            <span class="img-text"
+              >图片格式为 JPG/JPEG/PNG/PDF 大小在2MB内</span
+            >
           </el-form-item>
         </el-col>
       </el-row>
+
       <!-- 保存个人信息 -->
       <el-row class="inline-info" type="flex" justify="center">
         <el-col :span="12">
@@ -89,10 +95,10 @@
         </el-form-item>
         <!-- 个人头像 -->
         <!-- 员工照片 -->
-        <el-form-item label="员工照片">
-          <!-- 放置上传图片 -->
-          <ImageUpload />
-        </el-form-item>
+        <!-- <el-form-item label="员工照片"> -->
+        <!-- 放置上传图片 -->
+        <!-- <ImageUpload /> -->
+        <!-- </el-form-item> -->
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
             <el-option
@@ -495,4 +501,14 @@ export default {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style scoped>
+.user-info .block > .title {
+  margin: 40px 0px 20px 20px;
+  border-bottom: 1px solid #e1e1e1;
+  padding-bottom: 10px;
+}
+.user-info .img-text {
+  padding: 10px 0px;
+  margin-left: -8%;
+}
+</style>
