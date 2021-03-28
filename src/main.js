@@ -15,6 +15,7 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import * as directives from '@/directives' // 自定义指令
 import * as filters from '@/filters/index'
+
 // 注册自定义指令
 // 遍历所有的导出的指令对象 完成自定义全局注册
 Object.keys(directives).forEach(key => {

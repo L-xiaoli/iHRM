@@ -9,6 +9,16 @@
           </el-breadcrumb-item>
           <el-breadcrumb-item>打印</el-breadcrumb-item>
         </el-breadcrumb>
+        <!-- 打印 -->
+        <el-row type="flex" justify="end">
+          <el-button size="small" @click="$router.back()" type="success"
+            >返回</el-button
+          >
+          <el-button v-print="printObj" size="small" type="primary"
+            >打印</el-button
+          >
+        </el-row>
+        <!-- / 打印 -->
         <div v-if="type === 'personal'">
           <h2 class="centInfo">员工信息表</h2>
           <table cellspacing="0" width="100%" class="tableList">
@@ -349,7 +359,10 @@ export default {
     return {
       formData: {},
       userId: this.$route.params.id,
-      type: this.$route.query.type // 打印类型
+      type: this.$route.query.type, // 打印类型
+      printObj: {
+        id: 'myPrint'
+      }
     }
   },
   // 创建完毕状态
