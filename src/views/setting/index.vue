@@ -247,7 +247,6 @@ export default {
     // 获取公司信息
     async getCompanyInfo() {
       const res = await getCompanyInfo(this.companyId)
-      console.log(res)
       this.companyInfo = res
     },
     // 删除角色
@@ -311,7 +310,7 @@ export default {
     },
     // 修改权限
     async btnPermOK() {
-      // 调用el-tree的方法，获得已经存在的选中的复选框（this.$refs.permTree.getCheckedKeys()）
+      // 调用el-tree的方法，获得目前被选中的节点的 key 所组成的数组（this.$refs.permTree.getCheckedKeys()）
       await assignPerm({
         permIds: this.$refs.permTree.getCheckedKeys(),
         id: this.roleId
