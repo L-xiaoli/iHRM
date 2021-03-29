@@ -32,7 +32,12 @@
               <el-table-column label="描述" prop="description" />
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button size="small" type="success">分配权限</el-button>
+                  <el-button
+                    size="small"
+                    type="success"
+                    @click="assignPerm(scope.row.id)"
+                    >分配权限</el-button
+                  >
                   <el-button
                     size="small"
                     type="primary"
@@ -117,6 +122,7 @@
         </el-tabs>
       </el-card>
     </div>
+    <!-- 新增与编辑 -->
     <el-dialog
       :title="roleForm.id ? '编辑角色' : '新增角色'"
       :visible="showRoleDialog"
@@ -142,6 +148,36 @@
           <el-button size="small" type="primary" @click="submitOK"
             >确定</el-button
           >
+        </el-col>
+      </el-row>
+    </el-dialog>
+    <!-- 分配权限 -->
+    <el-dialog
+      title="分配权限"
+      :visible="showPermDialog"
+      @close="btnPermCancel"
+    >
+      <!-- 权限是一颗树 -->
+      <!-- 将数据绑定到组件上 -->
+      <!-- check-strictly 如果为true 那表示父子勾选时  不互相关联 如果为false就互相关联 -->
+      <!-- id作为唯一标识 -->
+      <el-tree
+        ref="permTree"
+        :data="permData"
+        :props="defaultProps"
+        :show-checkbox="true"
+        :check-strictly="true"
+        :default-expand-all="true"
+        :default-checked-keys="selectCheck"
+        node-key="id"
+      />
+      <!-- 确定 取消 -->
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="6">
+          <el-button type="primary" size="small" @click="btnPermOK"
+            >确定</el-button
+          >
+          <el-button size="small" @click="btnPermCancel">取消</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -179,7 +215,14 @@ export default {
       roleForm: {
         name: null, // 角色名称
         description: null // 角色描述
-      }
+      },
+      showPermDialog: false, // 控制分配权限弹层的显示后者隐藏
+      defaultProps: {
+        label: 'name'
+      },
+      permData: [], // 专门用来接收权限数据 树形数据
+      selectCheck: [], // 定义一个数组来接收 已经选中的节点
+      roleId: null // 用来记录分配角色的id
     }
   },
   created() {
@@ -242,7 +285,7 @@ export default {
         this.$message.error('操作失败!')
       }
     },
-    // 关闭弹出层
+    // 关闭新增与删除弹出层
     btnCancel() {
       this.roleForm = {
         name: '',
@@ -251,6 +294,21 @@ export default {
       // ? 表单清空：回到表单第一次渲染完毕的结果
       this.$refs.roleForm.resetFields()
       this.showRoleDialog = false
+    },
+    // 分配权限
+    assignPerm(id) {
+      console.log(id)
+      this.showPermDialog = true
+    },
+    btnPermOK() {
+      console.log(1)
+      this.showPermDialog = false
+    },
+
+    // 关闭新分配角色弹出层
+    btnPermCancel() {
+      console.log()
+      this.showPermDialog = false
     }
   }
 }
