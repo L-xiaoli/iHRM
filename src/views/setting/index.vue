@@ -191,7 +191,8 @@ import {
   delRoleById,
   editRole,
   getRoleDetail,
-  addRole
+  addRole,
+  assignPerm
 } from '@/api/setting'
 import { treeData } from '@/utils'
 import { getPermissionList } from '@/api/permission'
@@ -308,14 +309,20 @@ export default {
       this.selectCheck = permIds
       this.showPermDialog = true
     },
-    btnPermOK() {
-      console.log(1)
+    // 修改权限
+    async btnPermOK() {
+      // 调用el-tree的方法，获得已经存在的选中的复选框（this.$refs.permTree.getCheckedKeys()）
+      await assignPerm({
+        permIds: this.$refs.permTree.getCheckedKeys(),
+        id: this.roleId
+      })
+      this.$message.success('分配权限成功')
       this.showPermDialog = false
     },
 
     // 关闭新分配角色弹出层
     btnPermCancel() {
-      console.log()
+      this.selectCheck = [] // 重置数据
       this.showPermDialog = false
     }
   }
