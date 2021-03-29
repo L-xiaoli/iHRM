@@ -193,6 +193,8 @@ import {
   getRoleDetail,
   addRole
 } from '@/api/setting'
+import { treeData } from '@/utils'
+import { getPermissionList } from '@/api/permission'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Setting',
@@ -296,8 +298,10 @@ export default {
       this.showRoleDialog = false
     },
     // 分配权限
-    assignPerm(id) {
-      console.log(id)
+    async assignPerm(id) {
+      // 转化list到树形数据
+      this.permData = treeData(await getPermissionList(), '0')
+      this.roleId = id // 记录id
       this.showPermDialog = true
     },
     btnPermOK() {
