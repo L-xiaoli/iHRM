@@ -302,6 +302,10 @@ export default {
       // 转化list到树形数据
       this.permData = treeData(await getPermissionList(), '0')
       this.roleId = id // 记录id
+      // permIds是当前角色所拥有的权限点数据
+      const { permIds } = await getRoleDetail(id)
+      // 将当前角色所拥有的权限id赋值
+      this.selectCheck = permIds
       this.showPermDialog = true
     },
     btnPermOK() {
