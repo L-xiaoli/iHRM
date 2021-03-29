@@ -4,7 +4,9 @@
       <!-- 靠右的按钮 -->
       <page-tools>
         <template v-slot:after>
-          <el-button type="primary" size="small">添加权限</el-button>
+          <el-button type="primary" size="small" @click="addPermission(1, '0')"
+            >添加权限</el-button
+          >
         </template>
       </page-tools>
       <!-- 表格 -->
@@ -19,11 +21,16 @@
         <el-table-column align="center" label="描述" prop="description" />
         <el-table-column align="center" label="操作">
           <template slot-scope="{ row }">
-            <el-button v-if="row.type === 1" type="text">添加</el-button>
+            <el-button
+              v-if="row.type === 1"
+              type="text"
+              @click="addPermission(2, row.id)"
+              >添加</el-button
+            >
             <el-button type="text" @click="editPermission(row.id)"
               >编辑</el-button
             >
-            <el-button type="text" @click="editPermission(row.id)"
+            <el-button type="text" @click="delPermission(row.id)"
               >删除</el-button
             >
           </template>
@@ -72,8 +79,14 @@
 </template>
 
 <script>
-import { getPermissionList } from '@/api/permission'
 import { treeData } from '@/utils'
+import {
+  updatePermission,
+  addPermission,
+  getPermissionDetail,
+  delPermission,
+  getPermissionList
+} from '@/api/permission'
 export default {
   data() {
     return {
@@ -108,10 +121,26 @@ export default {
       this.list = treeData(await getPermissionList(), '0')
       console.log(this.list)
     },
-    // 编辑权限
-    editPermission(id) {
+    addPermission(type, pid) {
+      this.formData.pid = pid //记录pid
+      this.formData.type = type
       this.showDialog = true
-      console.log(id)
+    },
+    // 编辑权限( 根据获取id获取详情)
+    async editPermission(id) {
+      this.formData = await getPermissionDetail(id)
+      this.showDialog = true
+    },
+    // 删除操作
+    async delPermission(id) {
+      try {
+        await this.$confirm('确定要删除该数据吗')
+        await delPermission(id)
+        this.getPermissionList()
+        this.$message.success('删除成功')
+      } catch (error) {
+        console.log(error)
+      }
     },
     btnOK() {
       this.showDialog = false
