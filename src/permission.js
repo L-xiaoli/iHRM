@@ -27,7 +27,6 @@ router.beforeEach(async function(to, from, next) {
           'permission/filterRoutes',
           roles.menus
         )
-        console.log(roles.menus)
         // routes就是筛选得到的动态路由
         // 动态路由 添加到 路由表中 默认的路由表 只有静态路由 没有动态路由
         // addRoutes  必须 用 next(地址) 不能用next()
