@@ -121,6 +121,7 @@ export default {
       this.list = treeData(await getPermissionList(), '0')
       console.log(this.list)
     },
+    // 点击新增记录当前信息
     addPermission(type, pid) {
       this.formData.pid = pid //记录pid
       this.formData.type = type
@@ -142,11 +143,35 @@ export default {
         console.log(error)
       }
     },
+    // 新增和编辑（提交按钮）
     btnOK() {
-      this.showDialog = false
+      this.$refs.perForm
+        .validate()
+        .then(() => {
+          if (this.formData.id) {
+            // 编辑
+            return updatePermission(this.formData)
+          }
+          // 新增
+          return addPermission(this.formData)
+        })
+        .then(() => {
+          this.$message.success('操作成功！')
+          this.getPermissionList()
+          this.showDialog = false
+        })
     },
     //  关闭弹层
     btnCancel() {
+      this.formData = {
+        name: '', // 名称
+        code: '', // 标识
+        description: '', // 描述
+        type: '', // 类型 该类型 不需要显示 因为点击添加的时候已经知道类型了
+        pid: '', // 因为做的是树 需要知道添加到哪个节点下了
+        enVisible: '0' // 开启
+      }
+      this.$refs.perForm.resetFields()
       this.showDialog = false
     }
   }
