@@ -17,10 +17,27 @@ router.beforeEach(async function(to, from, next) {
       //  放行才去获取用户资料
       if (!store.getters.userId) {
         // 如果没有id这个值 才会调用 vuex的获取资料的action
-        await store.dispatch('user/getUserInfo')
+        // async 函数所return的内容 用 await就可以接收到
+        const { roles } = await store.dispatch('user/getUserInfo')
         // 为什么要写await 因为我们想获取完资料再去放行
+        // ! 筛选用户的可用路由
+        // actions中函数 默认是Promise对象 调用这个对象 想要获取返回的值话 必须 加 await或者是then
+        // actions是做异步操作的
+        const routes = await store.dispatch(
+          'permission/filterRoutes',
+          roles.menus
+        )
+        console.log(roles.menus)
+        // routes就是筛选得到的动态路由
+        // 动态路由 添加到 路由表中 默认的路由表 只有静态路由 没有动态路由
+        // addRoutes  必须 用 next(地址) 不能用next()
+        router.addRoutes(routes) // 添加动态路由到路由表  铺路
+        // 添加完动态路由之后
+        next(to.path) // 相当于跳到对应的地址  相当于多做一次跳转 为什么要多做一次跳转
+        // 进门了，但是进门之后我要去的地方的路还没有铺好，直接走，掉坑里，多做一次跳转，再从门外往里进一次，跳转之前 把路铺好，再次进来的时候，路就铺好了
+      } else {
+        next() // 直接放行
       }
-      next() // 直接放行
     }
   } else {
     // ? 2.没有token
