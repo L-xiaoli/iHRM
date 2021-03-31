@@ -48,10 +48,11 @@ export const constantRoutes = [
         component: () => import('@/views/import/index')
       }
     ]
-  },
+  }
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  // ! 将404放在所有路由后面（src/permision.js）
+  // { path: '*', redirect: '/404', hidden: true }
 ]
 // 静态路由
 export const asyncRoutes = [

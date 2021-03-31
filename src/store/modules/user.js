@@ -1,5 +1,6 @@
 import { getToken, setToken, removeToken, setTimeStamp } from '@/utils/auth'
 import { login, getInfo, getUserDetailById } from '@/api/user'
+import { resetRouter } from '@/router/index'
 
 const state = {
   token: getToken(), // 设置token初始状态   token持久化 => 放到缓存中
@@ -46,6 +47,10 @@ const actions = {
   logout(context) {
     context.commit('removeToken') // 删Token
     context.commit('removeUserInfo') // 删资料
+    resetRouter() // 重置路由
+    // 设置权限模块下的为初始路由（子模块调用子模块都没加锁才可以）
+    // mutations名称，payload载荷， { root: true }调用根级别的mutation或者action
+    context.commit('permission/setRoutes', [], { root: true })
   }
 }
 export default {
