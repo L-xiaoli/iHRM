@@ -1,19 +1,37 @@
+
 import Layout from '@/layout'
-// 每个子模块 其实 都是外层是layout  组件位于layout的二级路由里面
-export default {
-  path: '/attendances', // 路径
-  name: 'attendances', // 给路由规则加一个name
-  component: Layout, // 组件
-  // 配置二级路的路由表
+
+const attendRouter = {
+  path: '/attendances',
+  component: Layout,
+  name: 'attendances',
   children: [
     {
       path: '',
-      component: () => import('@/views/attendances'), // 按需导入
-      // meta：路由元信息  其实就是存储数据的对象 我们可以在这里放置一些信息
+      component: () => import('@/views/attendances'),
+      name: 'attendances',
       meta: {
         title: '考勤',
-        icon: 'skill'
+        icon: 'excel' }
+    },
+    {
+      path: 'archiving',
+      component: () => import('@/views/attendances/historical'),
+      name: 'archiving',
+      hidden: true,
+      meta: {
+        title: '归档'
+      }
+    },
+    {
+      path: 'report/:month',
+      component: () => import('@/views/attendances/report'),
+      name: 'reports',
+      hidden: true,
+      meta: {
+        title: '报表'
       }
     }
   ]
 }
+export default attendRouter

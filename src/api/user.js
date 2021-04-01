@@ -24,5 +24,8 @@ export function getUserDetailById(id) {
     url: `/sys/user/${id}`
   })
 }
-
+export function getUserSalary() {}
+export function getUserEmploy() {}
+export function transferPosition() {}
+export function regularWorker() {}
 export function logout() {}

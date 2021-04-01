@@ -100,3 +100,12 @@ export function assignRoles(data) {
     method: 'put'
   })
 }
+/**
+ * 获取企业的部门列表
+ */
+export function getDepartmentList() {
+  return request({
+    url: '/company/department',
+    method: 'get'
+  })
+}
