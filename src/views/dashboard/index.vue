@@ -88,10 +88,16 @@
             <span>流程申请</span>
           </div>
           <div class="sideNav">
-            <el-button class="sideBtn">加班离职</el-button>
+            <el-button class="sideBtn" @click="showDialog = true"
+              >加班离职</el-button
+            >
             <el-button class="sideBtn">请假调休</el-button>
-            <el-button class="sideBtn">审批列表</el-button>
-            <el-button class="sideBtn">我的信息</el-button>
+            <el-button class="sideBtn" @click="$router.push('/users/approvals')"
+              >审批列表</el-button
+            >
+            <el-button class="sideBtn" @click="$router.push('/users/info')"
+              >我的信息</el-button
+            >
           </div>
         </el-card>
 
@@ -133,6 +139,42 @@
         </el-card>
       </el-col>
     </el-row>
+    <!-- 弹出层 -->
+    <el-dialog :visible="showDialog" title="离职申请" @close="btnCancel">
+      <el-form
+        ref="ruleForm"
+        :model="ruleForm"
+        status-icon
+        label-width="110px"
+        :rules="rules"
+      >
+        <!--离职表单-->
+        <el-form-item label="离职时间" prop="end_time">
+          <el-date-picker
+            v-model="ruleForm.exceptTime"
+            type="datetime"
+            style="width: 70%;"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="选择日期时间"
+          />
+        </el-form-item>
+        <el-form-item label="离职原因" prop="reason">
+          <el-input
+            v-model="ruleForm.reason"
+            type="textarea"
+            :autosize="{ minRows: 3, maxRows: 8 }"
+            style="width: 70%;"
+            placeholder="请输入内容"
+          />
+        </el-form-item>
+      </el-form>
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="6">
+          <el-button size="small" type="primary" @click="btnOK">确定</el-button>
+          <el-button size="small" @click="btnCancel">取消</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
@@ -141,6 +183,7 @@ import { mapGetters, createNamespacedHelpers } from 'vuex'
 const { mapState } = createNamespacedHelpers('user')
 import workCalendar from './components/work-calendar'
 import Radar from './components/radar'
+import { startProcess } from '@/api/approvals'
 export default {
   name: 'Dashboard',
   components: {
@@ -153,7 +196,40 @@ export default {
   },
   data() {
     return {
-      defaultImg: require('@/assets/common/head.jpg')
+      defaultImg: require('@/assets/common/head.jpg'),
+      showDialog: false,
+      ruleForm: {
+        exceptTime: '',
+        reason: '',
+        processKey: 'process_dimission', // 特定的审批
+        processName: '离职'
+      },
+      rules: {
+        exceptTime: [{ required: true, message: '离职时间不能为空' }],
+        reason: [{ required: true, message: '离职原因不能为空' }]
+      }
+    }
+  },
+  methods: {
+    btnOK() {
+      this.$refs.ruleForm.validate(async validate => {
+        if (validate) {
+          const data = { ...this.ruleForm, userId: this.userInfo.userId }
+          await startProcess(data)
+          this.$message.success('提交流程成功')
+          this.btnCancel()
+        }
+      })
+    },
+    btnCancel() {
+      this.showDialog = false
+      this.$refs.ruleForm.resetFields()
+      this.ruleForm = {
+        exceptTime: '',
+        reason: '',
+        processKey: 'process_dimission', // 特定的审批
+        processName: '离职'
+      }
     }
   }
 }
