@@ -12,6 +12,7 @@
     </div>
     <!-- <breadcrumb class="breadcrumb-container" /> -->
     <div class="right-menu">
+      <screen-full class="right-menu-item" />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img v-imagerror="defaultImg" :src="staffPhoto" class="user-avatar" />
@@ -51,11 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'staffPhoto',
-      'name'
-    ])
+    ...mapGetters(['sidebar', 'staffPhoto', 'name'])
   },
   methods: {
     toggleSideBar() {
@@ -170,6 +167,10 @@ export default {
           font-size: 12px;
         }
       }
+    }
+    .right-menu-item {
+      display: inline-block;
+      vertical-align: middle;
     }
   }
 }
