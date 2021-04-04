@@ -9,6 +9,7 @@ export default {
     {
       path: '',
       component: () => import('@/views/departments'), // 按需导入
+      name: 'departments',
       // meta：路由元信息  其实就是存储数据的对象 我们可以在这里放置一些信息
       meta: {
         title: '组织架构',

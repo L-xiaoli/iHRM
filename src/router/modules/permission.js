@@ -10,6 +10,7 @@ export default {
     {
       path: '',
       component: () => import('@/views/permission'), // 按需导入
+      name: 'permissions',
       // meta：路由元信息  其实就是存储数据的对象 我们可以在这里放置一些信息
       meta: {
         title: '权限管理',

@@ -14,6 +14,8 @@
     <div class="right-menu">
       <!-- 放置全屏插件 -->
       <screen-full class="right-menu-item" />
+      <!-- 放置切换多语言 -->
+      <lang-select class="right-menu-item" />
       <!-- 放置切换主题插件 -->
       <theme-picker class="right-menu-item" />
       <el-dropdown class="avatar-container" trigger="click">
